@@ -26,6 +26,10 @@ uniform float HueChange;
 #include "util/math"
 #include "util/hueShift"
 
+bool floatEquals( in float a, in float b){
+	return abs(a - b) < 0.000001;
+}
+
 void main()
 {
 	vec3 normal = normalize(vertNormal);
@@ -74,7 +78,12 @@ void main()
 
 	vec3 tintColour = TintColour;
 	col = vec3(col.x * tintColour.x * lighting.x, col.y * tintColour.y * lighting.y, col.z * tintColour.z * lighting.z);
-
-    vec4 fragCol = vec4(col * vertColour, Alpha * texSample.w);
+	vec4 fragCol;
+	if (Alpha == 0.5){
+		fragCol = vec4(vec3(0.5 * (col.r + col.g + col.b)/3.0 + 0.4, 0.0, 0.0), texSample.w);
+	} else {
+		//fragCol = vec4(vec3(0.5 * (col.r + col.g + col.b)/3.0 + 0.4, 0.0, 0.0), texSample.w);
+		fragCol = vec4(col * vertColour, Alpha * texSample.w);
+	}
 	gl_FragColor = fragCol;
 }
